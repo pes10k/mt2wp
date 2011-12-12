@@ -5,13 +5,100 @@ MoveableType to WordPress Importer
 
 By Peter Snyder <snyderp@gmail.com>
 
-This library moves content from a MoveableType export file (MTIF) to into a WordPress instance.  Currently handles the following items:
+This library moves content from a MoveableType export file (MTIF) to into a
+WordPress instance.  Currently handles the following items:
 
  * Tagging (from the MoveableType categories)
- * Assets (files and images) mentioned in those MTIF posts.  Items are copied over into their equivalent location on the WordPress install so, for example, an image located at http://oldexample.org/file.jpg will be copied and located at http://newexample.org/file.jpg
+ * Assets (files and images) mentioned in those MTIF posts.  Items are copied
+   over into their equivalent location on the WordPress install so, for example,
+   an image located at http://oldexample.org/file.jpg will be copied and
+   located at http://newexample.org/file.jpg
  * URL aliases, teasers, and body text
  * Post comments
- * Author associations, as long as WordPress users with the same name as those of each MoveableType author exists in wordpress 
+ * Author associations, as long as WordPress users with the same name as those
+   of each MoveableType author exists in Wordpress 
 
 Configuration Options
 ---------------------
+
+The MT2WP class is the launching point for the whole process, and handles all the transferring and renaming internally.  Its settings are set through the MT2WP::setSettings() method, which takes an array of some subset of the following configuration options:
+
+  General Configuration Settings
+  ###
+
+  - import_posts (bool):
+    Whether to import posts from MoveableType to Wordpress one execute
+    
+  - import_assets (bool):
+    Whether to copy over assets referenced in the MoveableType data (images,
+    PDFs, etc.) to the Wordpress.  Note that this option will only copy over
+    files that are linked to in at least MoveableType post's body and that
+    live on the same domain as the MoveableType install
+
+  - importer_timezone (bool):
+    Timezone for dates in the Wordpress.  Must be one of the dates described at
+    http://php.net/manual/en/timezones.php
+
+  - importer_delete_wp_posts_before (mixed):
+    Determines whether the importer should first delete some set of posts
+    already in Wordpress before moving content from MoveableType.  Defaults
+    to not doing so, but if provided a date, will delete all posts before that
+    date in Wordpress. If set, should be a date in a format that the DateTime
+    constructor recognizes.  See http://php.net/manual/en/book.datetime.php for
+    examples.
+
+  - importer_verbose (bool):
+    Whether the importer should echo out a description of what it is doing in.
+    Defaults to true
+
+  Wordpress Settings
+  ###
+
+  - wp_db_prefix (string):
+    The prefix for tables in the Wordpress database.  Defaults to "wp_"
+
+  - wp_db_name (string):
+    The name of the database that contains the Wordpress data
+
+  - wp_db_user (string):
+    The username for a database account that can write to the Wordpress database
+
+  - wp_db_pass (string):
+    The password for a database account that can write to the Wordpress database
+
+  - wp_db_host (string):
+    The host for the database that will hold the Wordpress data
+
+  - wp_db_driver (string):
+    The PDO database driver for the database that Wordpress is running from.
+    Defaults to 'mysql'.  Must be one of the drivers returned from
+    PDO::getAvailableDrivers().  See 
+    http://www.php.net/manual/en/pdo.getavailabledrivers.php for more information.
+
+  - wp_root (string):
+    The absolute path for the local directory containing the Wordpress install.
+    (ie, if your Wordpress configuration file is at 
+    /var/www/vhosts/example.org/httpdocs/wp-config.php, this value should be set
+    to '/var/www/vhosts/example.org/httpdocs').  No trailing slash please!
+  
+  - wp_domain (string):
+    The public domain for the Wordpress install we're transferring data into.
+    Should not include a trailing slash or protocol information (ie
+    example.org/some_sub_directory, not http://example.org/some_sub_directory/)
+
+  MoveableType Settings
+  ###
+
+  - mt_mtif_file (string):
+    Path to the exported MTIF data on the local filesystem (this is the file
+    generated when using the Export functionality in MoveableType)
+    
+  - mt_domain (string):
+    The domain MoveableType was configured to run from.  Should not include
+    a trailing slash or protocol information (ie example.org, not
+    http://example.org/)
+
+  - mt_domain_hidden (bool):
+    Whether the MoveableType install is publicly accessible or if its on a
+    hidden domain.  Note that this setting does nothing if "import_assets" is
+    false
