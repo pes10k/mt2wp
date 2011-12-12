@@ -1,0 +1,17 @@
+MT2WP
+=====
+MoveableType to WordPress Importer
+----------------------------------
+
+By Peter Snyder <snyderp@gmail.com>
+
+This library moves content from a MoveableType export file (MTIF) to into a WordPress instance.  Currently handles the following items:
+
+ * Tagging (from the MoveableType categories)
+ * Assets (files and images) mentioned in those MTIF posts.  Items are copied over into their equivalent location on the WordPress install so, for example, an image located at http://oldexample.org/file.jpg will be copied and located at http://newexample.org/file.jpg
+ * URL aliases, teasers, and body text
+ * Post comments
+ * Author associations, as long as WordPress users with the same name as those of each MoveableType author exists in wordpress 
+
+Configuration Options
+---------------------
